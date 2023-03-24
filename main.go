@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/sashabaranov/go-openai"
 	"github.com/spf13/viper"
 )
 
@@ -37,17 +39,32 @@ func main() {
 	viper.SetConfigFile(".env")
 	viper.ReadInConfig()
 	apiKey := viper.GetString("OPENAI_KEY")
-	if apiKey == "" {
+	if apiKey == "" { // if there is no api key, throw an error
 		panic("Missing API Key")
 	}
 	fmt.Println(apiKey)
 
-	// if there is no api key, throw an error
+	// initialize the client
+	client := openai.NewClient(apiKey)
+	response, err := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: "Hello!",
+				},
+			},
+		},
+	)
+	if err != nil {
+		fmt.Println("Completion error: &v\n", err)
+		return
+	}
+	fmt.Println(response.Choices[0].Message.Content)
 
 	// create a context
-
-	// initialize the client
-	// client := openai.NewClient("")
 
 	//set a preamble, which in this case is "give me a sql query"
 
