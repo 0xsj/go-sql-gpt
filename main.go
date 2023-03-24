@@ -33,14 +33,21 @@ type OpenAIRequest struct {
 
 // main entry point
 func main() {
-	fmt.Println("client running")
 	// using viper to get the appropriate envs
+	viper.SetConfigFile(".env")
+	viper.ReadInConfig()
+	apiKey := viper.GetString("OPENAI_KEY")
+	if apiKey == "" {
+		panic("Missing API Key")
+	}
+	fmt.Println(apiKey)
 
 	// if there is no api key, throw an error
 
 	// create a context
 
 	// initialize the client
+	// client := openai.NewClient("")
 
 	//set a preamble, which in this case is "give me a sql query"
 
@@ -48,6 +55,5 @@ func main() {
 
 	// when we are loading / waiting for the response, show a spinner
 
-	viper.SetConfigFile(".env")
 	// client := openai.NewClient("")
 }
